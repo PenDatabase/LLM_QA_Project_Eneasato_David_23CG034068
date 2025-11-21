@@ -7,5 +7,5 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
-      - key: DEEPSEEK_API_KEY
+      - key: HUGGINGFACE_API_TOKEN
         sync: false
