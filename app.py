@@ -6,13 +6,13 @@ Part B: Flask Web Application
 from flask import Flask, render_template, request, jsonify
 import re
 import string
-from groq import Groq
+from openai import OpenAI
 import os
 
 app = Flask(__name__)
 
 # Get API key from environment variable
-GROQ_API_KEY = os.getenv('GROQ_API_KEY', '')
+DEEPSEEK_API_KEY = os.getenv('DEEPSEEK_API_KEY', '')
 
 def preprocess_text(text):
     """
@@ -37,10 +37,13 @@ def preprocess_text(text):
 
 def query_llm(question, api_key):
     """
-    Send question to Groq LLM API and get response
+    Send question to DeepSeek LLM API and get response
     """
     try:
-        client = Groq(api_key=api_key)
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.deepseek.com"
+        )
         
         # Create chat completion
         chat_completion = client.chat.completions.create(
@@ -54,7 +57,7 @@ def query_llm(question, api_key):
                     "content": question
                 }
             ],
-            model="llama3-8b-8192",  # Using Llama 3 model on Groq
+            model="deepseek-chat",
             temperature=0.7,
             max_tokens=1024,
         )
@@ -78,7 +81,7 @@ def ask_question():
     """
     data = request.get_json()
     question = data.get('question', '').strip()
-    api_key = data.get('api_key', GROQ_API_KEY).strip()
+    api_key = data.get('api_key', DEEPSEEK_API_KEY).strip()
     
     if not question:
         return jsonify({
@@ -87,7 +90,7 @@ def ask_question():
     
     if not api_key:
         return jsonify({
-            'error': 'API key is required. Please set GROQ_API_KEY environment variable or provide it in the form.'
+            'error': 'API key is required. Please set DEEPSEEK_API_KEY environment variable or provide it in the form.'
         }), 400
     
     # Preprocess the question

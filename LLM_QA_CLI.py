@@ -5,7 +5,7 @@ Part A: Python CLI Application
 
 import re
 import string
-from groq import Groq
+from openai import OpenAI
 import os
 
 def preprocess_text(text):
@@ -31,10 +31,13 @@ def preprocess_text(text):
 
 def query_llm(question, api_key):
     """
-    Send question to Groq LLM API and get response
+    Send question to DeepSeek LLM API and get response
     """
     try:
-        client = Groq(api_key=api_key)
+        client = OpenAI(
+            api_key=api_key,
+            base_url="https://api.deepseek.com"
+        )
         
         # Create chat completion
         chat_completion = client.chat.completions.create(
@@ -48,7 +51,7 @@ def query_llm(question, api_key):
                     "content": question
                 }
             ],
-            model="llama3-8b-8192",  # Using Llama 3 model on Groq
+            model="deepseek-chat",
             temperature=0.7,
             max_tokens=1024,
         )
@@ -64,16 +67,16 @@ def main():
     """
     print("=" * 60)
     print("NLP Question-and-Answering System (CLI)")
-    print("Powered by Groq LLM API")
+    print("Powered by DeepSeek LLM API")
     print("=" * 60)
     print()
     
     # Get API key from environment variable or user input
-    api_key = os.getenv('GROQ_API_KEY')
+    api_key = os.getenv('DEEPSEEK_API_KEY')
     
     if not api_key:
-        print("GROQ_API_KEY not found in environment variables.")
-        api_key = input("Please enter your Groq API key: ").strip()
+        print("DEEPSEEK_API_KEY not found in environment variables.")
+        api_key = input("Please enter your DeepSeek API key: ").strip()
     
     if not api_key:
         print("Error: API key is required to run this application.")
