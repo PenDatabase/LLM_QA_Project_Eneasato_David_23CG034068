@@ -1,7 +1,7 @@
-Name: [Your Name Here]
-Matric Number: [Your Matric Number Here]
+Name: Eneasato David Chibueze
+Matric Number: 23CG034068
 Live URL: [Your Deployed Application URL Here]
-GitHub Repository: [Your GitHub Repository URL Here]
+GitHub Repository: https://github.com/PenDatabase/LLM_QA_Project_Eneasato_David_23CG034068
 
 Instructions:
 1. Replace the placeholders above with your actual information
