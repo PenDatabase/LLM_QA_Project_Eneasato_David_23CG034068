@@ -7,6 +7,10 @@ import re
 import string
 from openai import OpenAI
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 def preprocess_text(text):
     """

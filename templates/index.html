@@ -14,13 +14,6 @@
         </header>
 
         <div class="main-content">
-            <!-- API Key Input Section -->
-            <div class="api-key-section">
-                <label for="api_key">DeepSeek API Key (optional if set in environment):</label>
-                <input type="password" id="api_key" placeholder="Enter your DeepSeek API key">
-                <small>Get your free API key at <a href="https://platform.deepseek.com/" target="_blank">platform.deepseek.com</a></small>
-            </div>
-
             <!-- Question Input Section -->
             <div class="input-section">
                 <label for="question">Enter Your Question:</label>
@@ -71,7 +64,6 @@
     <script>
         async function askQuestion() {
             const question = document.getElementById('question').value.trim();
-            const apiKey = document.getElementById('api_key').value.trim();
             
             // Hide previous results and errors
             document.getElementById('results').style.display = 'none';
@@ -95,8 +87,7 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        question: question,
-                        api_key: apiKey
+                        question: question
                     })
                 });
                 

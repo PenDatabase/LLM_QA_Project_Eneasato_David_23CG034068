@@ -8,6 +8,10 @@ import re
 import string
 from openai import OpenAI
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -81,23 +85,22 @@ def ask_question():
     """
     data = request.get_json()
     question = data.get('question', '').strip()
-    api_key = data.get('api_key', DEEPSEEK_API_KEY).strip()
     
     if not question:
         return jsonify({
             'error': 'Please enter a valid question.'
         }), 400
     
-    if not api_key:
+    if not DEEPSEEK_API_KEY:
         return jsonify({
-            'error': 'API key is required. Please set DEEPSEEK_API_KEY environment variable or provide it in the form.'
+            'error': 'API key not configured. Please set DEEPSEEK_API_KEY in .env file.'
         }), 400
     
     # Preprocess the question
     processed_question, tokens = preprocess_text(question)
     
     # Query the LLM
-    answer = query_llm(question, api_key)
+    answer = query_llm(question, DEEPSEEK_API_KEY)
     
     return jsonify({
         'original_question': question,
