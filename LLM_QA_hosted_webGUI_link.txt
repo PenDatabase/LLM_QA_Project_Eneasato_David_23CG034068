@@ -1,0 +1,35 @@
+Name: [Your Name Here]
+Matric Number: [Your Matric Number Here]
+Live URL: [Your Deployed Application URL Here]
+GitHub Repository: [Your GitHub Repository URL Here]
+
+Instructions:
+1. Replace the placeholders above with your actual information
+2. Deploy the application to one of the following platforms:
+   - Render.com
+   - PythonAnywhere.com
+   - Streamlit Cloud
+   - Vercel
+
+Deployment Steps for Render.com:
+1. Create account at render.com
+2. Connect your GitHub repository
+3. Create new Web Service
+4. Set build command: pip install -r requirements.txt
+5. Set start command: gunicorn app:app
+6. Add environment variable: GROQ_API_KEY = [your groq api key]
+7. Deploy and copy the URL
+
+Deployment Steps for PythonAnywhere:
+1. Create account at pythonanywhere.com
+2. Upload your files or clone from GitHub
+3. Create a new web app (Flask)
+4. Configure WSGI file to point to app.py
+5. Install requirements: pip install -r requirements.txt
+6. Set environment variable for GROQ_API_KEY
+7. Reload the web app
+
+Get your Groq API Key:
+- Visit: https://console.groq.com/
+- Sign up for free account
+- Generate API key from dashboard

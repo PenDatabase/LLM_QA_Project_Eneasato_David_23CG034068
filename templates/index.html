@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NLP Question-and-Answering System</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🤖 NLP Question-and-Answering System</h1>
+            <p class="subtitle">Powered by Groq LLM API</p>
+        </header>
+
+        <div class="main-content">
+            <!-- API Key Input Section -->
+            <div class="api-key-section">
+                <label for="api_key">Groq API Key (optional if set in environment):</label>
+                <input type="password" id="api_key" placeholder="Enter your Groq API key">
+                <small>Get your free API key at <a href="https://console.groq.com/" target="_blank">console.groq.com</a></small>
+            </div>
+
+            <!-- Question Input Section -->
+            <div class="input-section">
+                <label for="question">Enter Your Question:</label>
+                <textarea id="question" rows="4" placeholder="Type your question here..."></textarea>
+                <button id="submit-btn" onclick="askQuestion()">
+                    <span id="btn-text">Ask Question</span>
+                    <span id="btn-loading" style="display: none;">Processing...</span>
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="results" class="results-section" style="display: none;">
+                <h2>Results</h2>
+                
+                <div class="result-card">
+                    <h3>📝 Original Question</h3>
+                    <p id="original-question"></p>
+                </div>
+
+                <div class="result-card">
+                    <h3>🔧 Processed Question</h3>
+                    <p id="processed-question"></p>
+                </div>
+
+                <div class="result-card">
+                    <h3>🔤 Tokens</h3>
+                    <div id="tokens" class="tokens-container"></div>
+                </div>
+
+                <div class="result-card answer-card">
+                    <h3>✨ Answer</h3>
+                    <div id="answer"></div>
+                </div>
+            </div>
+
+            <!-- Error Section -->
+            <div id="error" class="error-section" style="display: none;">
+                <h3>⚠️ Error</h3>
+                <p id="error-message"></p>
+            </div>
+        </div>
+
+        <footer>
+            <p>NLP Question-and-Answering System | COS331 - Artificial Intelligence Project</p>
+        </footer>
+    </div>
+
+    <script>
+        async function askQuestion() {
+            const question = document.getElementById('question').value.trim();
+            const apiKey = document.getElementById('api_key').value.trim();
+            
+            // Hide previous results and errors
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            
+            if (!question) {
+                showError('Please enter a question.');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.getElementById('submit-btn');
+            document.getElementById('btn-text').style.display = 'none';
+            document.getElementById('btn-loading').style.display = 'inline';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        question: question,
+                        api_key: apiKey
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || 'An error occurred');
+                }
+                
+                // Display results
+                document.getElementById('original-question').textContent = data.original_question;
+                document.getElementById('processed-question').textContent = data.processed_question;
+                
+                // Display tokens
+                const tokensContainer = document.getElementById('tokens');
+                tokensContainer.innerHTML = '';
+                data.tokens.forEach(token => {
+                    const tokenSpan = document.createElement('span');
+                    tokenSpan.className = 'token';
+                    tokenSpan.textContent = token;
+                    tokensContainer.appendChild(tokenSpan);
+                });
+                
+                // Display answer
+                document.getElementById('answer').textContent = data.answer;
+                
+                // Show results section
+                document.getElementById('results').style.display = 'block';
+                
+                // Scroll to results
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                // Reset button state
+                document.getElementById('btn-text').style.display = 'inline';
+                document.getElementById('btn-loading').style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        }
+        
+        function showError(message) {
+            document.getElementById('error-message').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Allow Enter key to submit (with Shift+Enter for new line)
+        document.getElementById('question').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                askQuestion();
+            }
+        });
+    </script>
+</body>
+</html>
